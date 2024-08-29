@@ -3,6 +3,12 @@ import SwiftUI
 import RealityKit
 
 struct ContentView: View {
+    @State private var showImmersiveSpace = false
+    @State private var imemrsiveSpaceIsShown = false
+
+    @Environment(\.openImmersiveSpace) var openImmersiveSpace
+    @Environment(\.dismissImmersiveSpace) var dismissImmersiveSpace
+
     @State var manager: GroupActivityManager
     @State private var groupStateObserver = GroupStateObserver()
     var body: some View {
@@ -39,8 +45,33 @@ struct ContentView: View {
                     manager.sendEmojiMessage(message: EmojiMessage(emoji: .laughing))
                 }
             }
+            Toggle("Show Immersive", isOn: $showImmersiveSpace)
+                .font(.title)
+                .frame(width: 360)
+                .padding(24)
+                .grassBackgroundEffect()
         }
         .padding()
+        .onChanged(of: $showImmersiveSpace) { _, newValue in
+            Task {
+                if newValue {
+                    switch await openImmersiveSpace(id: "ImmersiveSpace") {
+                        case .opened:
+                            imemrsiveSpaceIsShown = true
+                        case .error, .userCancelled:
+                            failthrough
+                        @unknown default:
+                            imemrsiveSpaceIsShown = false
+                            showImmersiveSpace = false
+
+                    }
+
+                } else if imemrsiveSpaceIsShown {
+                    await dismissImmersiveSpace()
+                    imemrsiveSpaceIsShown  = false
+                }
+            }
+        }
         .task {
             for await session in SampleActivity.sessions() {
                 await manager.configureGroupSession(session: session)

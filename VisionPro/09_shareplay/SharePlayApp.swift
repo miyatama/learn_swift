@@ -5,5 +5,9 @@ struct SharePlayApp: App {
         WindowGroup {
             ContentView (manager: manager)
         }
+
+        ImmersiveSpace {
+            ImmersiveView(manager: manager)
+        }
     }
 }
