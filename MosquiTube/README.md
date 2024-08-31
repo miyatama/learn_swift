@@ -28,4 +28,9 @@ YouTube見てると蚊が寄ってくるアプリ。
 | MosquitoManager | 蚊の実装, ヘッドセット位置をもらう。 |
 
 
+## need resource
+
++ background image
++ mosquito 3d model
++ mosquito flying noize
 
